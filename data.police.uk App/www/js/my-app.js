@@ -42,6 +42,46 @@ myApp.onPageInit('about', function (page) {
     });
 });
 
+
+
+        
+function searchSubmit(e) {
+    console.log("calling https://data.police.uk/api/forces");
+    // run createContentPage func after link was clicked
+    myApp.showPreloader('Searching');
+    
+    $$.ajax({
+        dataType: 'json',
+        processData: true,
+        url: 'https://data.police.uk/api/forces',
+        success: function searchSuccess(resp) {
+            alert(resp);
+            myApp.hidePreloader();
+            mainView.router.load({
+                template: myApp.templates.forces,
+                context: {
+                    forcelist: resp,
+                },
+            });
+        },
+        error: function searchError(xhr, err) {
+            myApp.hidePreloader();
+            myApp.alert('An error has occurred', 'Search Error');
+            console.error("Error on ajax call: " + err);
+            console.log(JSON.stringify(xhr));
+        }
+    });
+    
+};
+
+$$(document).on('click', '#search', searchSubmit);
+
+myApp.onPageInit('forces', function (page) {
+    console.log("called https://data.police.uk/api/forces");
+});
+
+
+
 // Generate dynamic page
 var dynamicPageIndex = 0;
 function createContentPage() {
