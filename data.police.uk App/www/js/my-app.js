@@ -1,8 +1,31 @@
 // Initialize your app
 var myApp = new Framework7();
 
+var isAndroid = Framework7.prototype.device.android === true;
+var isIos = Framework7.prototype.device.ios === true;
+
+Template7.global = {
+    android: isAndroid,
+    ios: isIos
+};
+
 // Export selectors engine
 var $$ = Dom7;
+
+if (isAndroid) {
+    // Change class
+    $$('.view.navbar-through').removeClass('navbar-through').addClass('navbar-fixed');
+    // And move Navbar into Page
+    $$('.view .navbar').prependTo('.view .page');
+}
+ 
+// Init App
+var myApp = new Framework7({
+    // Enable Material theme for Android device only
+    material: isAndroid ? true : false,
+    // Enable Template7 pages
+    template7Pages: true
+});
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -12,6 +35,7 @@ var mainView = myApp.addView('.view-main', {
 
 // Callbacks to run specific code for specific pages, for example for About page:
 myApp.onPageInit('about', function (page) {
+    console.log("about 123");
     // run createContentPage func after link was clicked
     $$('.create-page').on('click', function () {
         createContentPage();
