@@ -145,18 +145,18 @@ $$(document).on('click', '.panel .favorites-link', function searchLink() {
  */
 
 function searchSubmit(e) {
+
   var formData = myApp.formToJSON('#search');
+  
+  // set lat, lng
+  var lat, lng;
+
   e.preventDefault();
-  if (!formData.q) {
+  if (!formData.address) {
     myApp.alert('Please enter a search term', 'Search Error');
     return;
   }
 
-  if (formData.filter === 'all') {
-    formData.q = formData.q.trim();
-  } else {
-    formData.q = formData.filter + ':' + formData.q.trim();
-  }
   delete formData.filter;
   formData.type = 'track';
   $$('input').blur();
@@ -165,23 +165,47 @@ function searchSubmit(e) {
     dataType: 'json',
     data: formData,
     processData: true,
-    url: 'https://api.spotify.com/v1/search',
+    url: 'https://maps.googleapis.com/maps/api/geocode/json',
     success: function searchSuccess(resp) {
-      resp.tracks.count = resp.tracks.items.length === 25 ? "25 (max)" : resp.tracks.items.length;
-      myApp.hidePreloader();
-      mainView.router.load({
-        template: myApp.templates.results,
-        context: {
-          tracks: resp.tracks,
-        },
-      });
-    },
-    error: function searchError(xhr, err) {
-      myApp.hidePreloader();
-      myApp.alert('An error has occurred', 'Search Error');
-      console.error("Error on ajax call: " + err);
-      console.log(JSON.stringify(xhr));
-    }
+
+        // pass value into lat, lng
+        lat = resp.results[0].geometry.location.lat;
+        lng = resp.results[0].geometry.location.lng;
+        console.log(lat + ", " + lng);
+
+        $$.ajax({
+            dataType: 'json',
+            data: { q: lat + "," + lng },
+            processData: true,
+            url: 'https://data.police.uk/api/locate-neighbourhood',
+            success: function searchSuccess(force) {
+
+                console.log(force.force);
+                $$.ajax({
+                    dataType: 'json',
+                    processData: true,
+                    url: 'https://data.police.uk/api/' + force.force + '/neighbourhoods',
+                    success: function searchSuccess(nbrhds) {
+                        myApp.hidePreloader();
+                        mainView.router.load({
+                            template: myApp.templates.results,
+                            context: {
+                                tracks: nbrhds,
+                            },
+                        });
+                    }
+                });
+
+            }
+        });
+
+    }//,
+    //error: function searchError(xhr, err) {
+    //  myApp.hidePreloader();
+    //  myApp.alert('An error has occurred', 'Search Error');
+    //  console.error("Error on ajax call: " + err);
+    //  console.log(JSON.stringify(xhr));
+    //}
   });
 }
 
