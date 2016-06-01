@@ -181,6 +181,7 @@ function searchSubmit(e) {
             success: function searchSuccess(force) {
 
                 console.log(force.force);
+
                 $$.ajax({
                     dataType: 'json',
                     processData: true,
@@ -190,7 +191,8 @@ function searchSubmit(e) {
                         mainView.router.load({
                             template: myApp.templates.results,
                             context: {
-                                tracks: nbrhds,
+                                force: force.force,
+                                forces: nbrhds,
                             },
                         });
                     }
@@ -370,6 +372,53 @@ myApp.onPageInit('results', function(page) {
         else myApp.alert("Share plugin not found");
     });
 })
+
+
+
+
+myApp.onPageInit('neighbourhood', function (page) {
+    
+    $$.ajax({
+        dataType: 'json',
+        processData: true,
+        url: 'https://data.police.uk/api/' + page.context.force + '/' + page.context.id,
+        success: function searchSuccess(details) {
+            myApp.hidePreloader();
+            mainView.router.load({
+                template: myApp.templates.neighbourhooddetails,
+                context: {
+                    neighbourhoods: details,
+                },
+            });
+        }
+    });
+
+    // fetch the favorites
+    var favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    var favoriteIds = JSON.parse(localStorage.getItem('favoriteIds')) || [];
+    var isFavorite = false;
+    if (favoriteIds.indexOf(page.context.id) !== -1) {
+        $$('.link.star').html('<i class="fa fa-star"></i>');
+        isFavorite = true;
+    }
+
+    // set up a context object to pass to the handler
+    var pageContext = {
+        track: page.context,
+        id: page.context.id,
+        isFavorite: isFavorite,
+        favorites: favorites,
+        favoriteIds: favoriteIds,
+        fromPage: page.fromPage.name,
+    };
+
+    // bind the playback and favorite controls
+    $$('.playback-controls a').on('click', playbackControlsClickHandler);
+    $$('.link.star').on('click', addOrRemoveFavorite.bind(pageContext));
+
+});
+
+
 myApp.onPageInit('details', function(page) {
   var previewUrl = page.context.preview_url;
   if (typeof Media !== 'undefined') {

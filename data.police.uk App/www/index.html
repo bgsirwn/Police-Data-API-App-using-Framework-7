@@ -141,7 +141,7 @@
                         <span>Search</span>
                     </a>
                 </div>
-                <div class="center sliding">Results</div>
+                <div class="center sliding">Neighbourhoods Results</div>
             </div>
         </div>
         {{/if}}
@@ -162,7 +162,7 @@
             <!-- Workshop - add searchbar -->
             <form class="searchbar">
                 <div class="searchbar-input">
-                    <input type="search" placeholder="Search Neighbourhoods">
+                    <input type="search" placeholder="Filter Neighbourhoods">
                     <a href="#" class="searchbar-clear"></a>
                 </div>
             </form>
@@ -176,17 +176,17 @@
             <div class="searchbar-overlay"></div>
 
             <div class="page-content">
-                <div class="content-block-title">{{tracks.count}} Police Forces returned</div>
+                <div class="content-block-title">{{forces.count}} Neighbourhoods returned</div>
                 <!-- Workshop - add searchbar-found class to media list -->
                 <div class="list-block media-list list-block-search searchbar-found">
                     <ul>
-                        {{#each tracks}}
-                        <li class="swipeout">
+                        {{#each forces}}
+                        <li class="swipeout">                            
                             <div class="swipeout-content">
                                 <a href="#" class="item-link item-content"
                                    data-item="{{this.id}}"
-                                   data-context="{{stringify this}}"
-                                   data-template="details">
+                                   data-context='{"id": "{{this.id}}", "name": "{{this.name}}", "force": "{{../force}}"}'
+                                   data-template="neighbourhood">
                                     <div class="item-inner">
                                         <div class="item-title-row">
                                             <div class="item-title">{{this.name}}</div>
@@ -209,6 +209,59 @@
                         </li>
                         {{/each}}
                     </ul>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/template7" id="neighbourhood">
+        <!-- Dynamic navbar for iOS theme -->
+        {{#if @global.ios}}
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="left sliding">
+                    <a href="#" class="back link">
+                        <i class="icon icon-back"></i>
+                        <span>Results</span>
+                    </a>
+                </div>
+                <div class="center sliding">Neighbourhood details</div>
+                <div class="right">
+                    <a href="#" class="link star">
+                        <i class="fa fa-star-o"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+
+        <div class="page" data-page="neighbourhood">
+            <!-- Fixed navbar for Material theme -->
+            {{#if @global.material}}
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a href="#" class="back link"><i class="icon icon-back"></i></a>
+                    </div>
+                    <div class="center">Neighbourhood details</div>
+                    <div class="right">
+                        <a href="#" class="link star">
+                            <i class="fa fa-star-o"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
+            <div class="page-content">
+                <div class="card">
+                   
+                    <div class="card-content">
+                        <div class="card-content-inner">
+                            <div class="track-name">{{this.name}}</div>
+                        </div>    
+                    </div>
+
                 </div>
             </div>
         </div>
