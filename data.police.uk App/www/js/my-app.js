@@ -353,6 +353,28 @@ function addOrRemoveFavorite(e) {
   return false;
 }
 
+
+
+function returnData(data_url) {
+
+    var ajaxData;
+
+    $$.ajax({
+        dataType: 'json',
+        processData: true,
+        url: data_url,
+        async: false,
+        ifModified: true,
+        success: function (data, textStatus, jqXHR) {
+            myApp.hidePreloader();
+            ajaxData = data;
+        }
+    });
+
+    return ajaxData;
+
+}
+
 myApp.onPageInit('results', function (page) {
 
     var mySearchbar = myApp.searchbar('.searchbar', {
@@ -362,40 +384,16 @@ myApp.onPageInit('results', function (page) {
         notFound: 'searchbar-not-found'
     });
 
-    //$$(page.container).find('.share').on('click', function (e) {
-    //    var item = page.context.tracks.items[this.dataset.item]
-
-    //    if (window.plugins && window.plugins.socialsharing) {
-    //        window.plugins.socialsharing.share("Hey! I found this on Spotify. It's called " + item.name + ", check it out!",
-    //            'Check this out', item.album.images[2].url, item.preview_url,
-    //            function () {
-    //                console.log("Share Success")
-    //            },
-    //            function (error) {
-    //                console.log("Share fail " + error)
-    //            });
-    //    }
-    //    else myApp.alert("Share plugin not found");
-    //});
-
     $$(page.container).find('.item-link.item-content').on('click', function (e, f, g) {
 
         myApp.showPreloader('Searching');
 
         var item = JSON.parse(this.dataset.context);
 
-        $$.ajax({
-            dataType: 'json',
-            processData: true,
-            url: 'https://data.police.uk/api/' + item.force + '/' + item.id,
-            success: function searchSuccess(details) {
-                myApp.hidePreloader();
-                mainView.router.load({
-                    template: myApp.templates.neighbourhood,
-                    context: {
-                        neighbourhoods: details,
-                    }
-                });
+        mainView.router.load({
+            template: myApp.templates.neighbourhood,
+            context: {
+                neighbourhoods: returnData('https://data.police.uk/api/' + item.force + '/' + item.id),
             }
         });
 
