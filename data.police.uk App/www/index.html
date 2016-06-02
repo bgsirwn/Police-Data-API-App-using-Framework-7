@@ -185,8 +185,8 @@
                             <div class="swipeout-content">
                                 <a href="#" class="item-link item-content"
                                    data-item="{{this.id}}"
-                                   data-context='{"id": "{{this.id}}", "name": "{{this.name}}", "force": "{{../force}}"}'
-                                   data-template="neighbourhood">
+                                   data-context='{"id": "{{this.id}}", "name": "{{this.name}}", "force": "{{../force}}"}'>
+                                    <!--data-template="neighbourhood"-->
                                     <div class="item-inner">
                                         <div class="item-title-row">
                                             <div class="item-title">{{this.name}}</div>
@@ -258,7 +258,7 @@
                    
                     <div class="card-content">
                         <div class="card-content-inner">
-                            <div class="track-name">{{this.name}}</div>
+                            <div class="track-name">{{neighbourhoods.url_force}}</div>
                         </div>    
                     </div>
 
