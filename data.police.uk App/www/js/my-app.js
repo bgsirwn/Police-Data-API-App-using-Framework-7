@@ -384,7 +384,7 @@ myApp.onPageInit('results', function (page) {
         notFound: 'searchbar-not-found'
     });
 
-    $$(page.container).find('.item-link.item-content').on('click', function (e, f, g) {
+    $$(page.container).find('.item-link.item-content').on('click', function (e) {
 
         myApp.showPreloader('Searching');
 
@@ -403,8 +403,36 @@ myApp.onPageInit('results', function (page) {
 
 
 myApp.onPageInit('neighbourhood', function (page) {
-    
-    console.log("loaded neighbourhood");
+
+    $$(page.container).find('.stop-and-search').on('click', function (e) {
+
+        myApp.showPreloader('Searching');
+
+        var item = JSON.parse(this.dataset.context);
+
+        mainView.router.load({
+            template: myApp.templates.stopandsearch,
+            context: {
+                stopAndSearch: returnData('https://data.police.uk/api/stops-street?lat=' + item.lat + '&lng=' + item.long + '&date=2015-12'),
+            }
+        });
+
+    });
+
+    $$(page.container).find('.crimes-at-location').on('click', function (e) {
+
+        myApp.showPreloader('Searching');
+
+        var item = JSON.parse(this.dataset.context);
+
+        mainView.router.load({
+            template: myApp.templates.crimesatlocation,
+            context: {
+                crimesAtLocation: returnData('https://data.police.uk/api/crimes-at-location?date=2015-12&lat=' + item.lat + '&lng=' + item.long),
+            }
+        });
+
+    });
 
     // fetch the favorites
     var favorites = JSON.parse(localStorage.getItem('favorites')) || [];
