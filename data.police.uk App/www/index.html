@@ -236,6 +236,7 @@
         {{/if}}
 
         <div class="page" data-page="neighbourhood">
+
             <!-- Fixed navbar for Material theme -->
             {{#if @global.material}}
             <div class="navbar">
@@ -372,35 +373,43 @@
             {{/if}}
 
             <div class="page-content">
-                {{#if tracks}}
-                <div class="content-block-title">Tracks</div>
+                {{#if forces}}
+                <div class="content-block-title">Police Forces</div>
                 <div class="list-block media-list">
                     <ul>
-                        {{#each tracks}}
-                        <li>
-                            <a href="#" class="item-link item-content"
-                               data-item="{{@index}}"
-                               data-context="{{stringify this}}"
-                               data-template="details">
-                                <div class="item-media">
-                                    <img width="80" data-src="{{this.album.images[0].url}}" class="lazy">
-                                </div>
-                                <div class="item-inner">
-                                    <div class="item-title-row">
-                                        <div class="item-title">{{this.name}}</div>
-                                        <div class="item-after">{{durationFromMs this.duration_ms}}</div>
+                        {{#each forces}}
+                        <li class="swipeout">                            
+                            <div class="swipeout-content">
+                                <a href="#" class="item-link item-content"
+                                   data-item="{{this.id}}"
+                                   data-context='{"id": "{{this.id}}", "name": "{{this.name}}", "force": "{{../force}}"}'>
+                                    <!--data-template="neighbourhood"-->
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title">{{this.name}}</div>
+                                        </div>
+                                        <div class="item-subtitle">{{this.id}}</div>
                                     </div>
-                                    <div class="item-subtitle">{{this.artists[0].name}}</div>
-                                    <div class="item-text">{{this.album.name}}</div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
+                            <!-- Swipeout actions right -->
+                            <div class="swipeout-actions-right">
+                                <!-- Swipeout actions links/buttons -->
+                                <a href="#" class="share" data-item="{{@index}}">
+                                    {{#if @global.material}}
+                                    <i class="icon fa fa-share-alt fa-3x"></i>
+                                </a>
+                                {{else}}
+                                <i class="icon fa fa-share fa-3x"></i></a>
+                                {{/if}}
+                            </div>
                         </li>
                         {{/each}}
                     </ul>
                 </div>
                 {{else}}
                 <div class="content-block">
-                    <p>You haven't favorited any tracks! Use the search function and add some to favorites.</p>
+                    <p>You haven't favorited any Police Forces! Use the search function and add some to favorites.</p>
                 </div>
                 {{/if}}
             </div>

@@ -308,6 +308,7 @@ function mediaPreviewStatusCallback(status) {
 }
 
 function addOrRemoveFavorite(e) {
+
   if (this.isFavorite) {
     // remove the favorite from the arrays
     this.favoriteIds.splice(this.favoriteIds.indexOf(this.id), 1);
@@ -348,6 +349,8 @@ function addOrRemoveFavorite(e) {
       reloadPrevious: true,
     });
   }
+
+  return false;
 }
 
 myApp.onPageInit('results', function (page) {
@@ -409,7 +412,7 @@ myApp.onPageInit('neighbourhood', function (page) {
     var favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     var favoriteIds = JSON.parse(localStorage.getItem('favoriteIds')) || [];
     var isFavorite = false;
-    if (favoriteIds.indexOf(page.context.id) !== -1) {
+    if (favoriteIds.indexOf(page.context.neighbourhoods.id) !== -1) {
         $$('.link.star').html('<i class="fa fa-star"></i>');
         isFavorite = true;
     }
@@ -417,15 +420,14 @@ myApp.onPageInit('neighbourhood', function (page) {
     // set up a context object to pass to the handler
     var pageContext = {
         track: page.context,
-        id: page.context.id,
+        id: page.context.neighbourhoods.id,
         isFavorite: isFavorite,
         favorites: favorites,
         favoriteIds: favoriteIds,
         fromPage: page.fromPage.name,
     };
 
-    // bind the playback and favorite controls
-    $$('.playback-controls a').on('click', playbackControlsClickHandler);
+    // bind the favorite controls
     $$('.link.star').on('click', addOrRemoveFavorite.bind(pageContext));
 
 });
