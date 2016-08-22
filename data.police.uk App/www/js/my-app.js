@@ -399,7 +399,7 @@ myApp.onPageInit('results', function (page) {
 
     });
 
-})
+});
 
 
 
@@ -438,20 +438,21 @@ function initMap(lat, lng, data) {
         zoom: 13
     });
 
-    for (var i = 0; i < data.length; i++) {
-        var marker = new google.maps.Marker({
-            map: map,
-            position: { lat: parseFloat(data[i].location.latitude), lng: parseFloat(data[i].location.longitude) },
-            //title: 'Hello World!'
-        });
-        google.maps.event.addListener(marker, 'click', function () {
-            infowindow.setContent('<div><strong>' + i + '</strong><br>' +
-              'Place ID: ' + i + '<br>' +
-              i + '</div>');
-            infowindow.open(map, this);
-        });
+    if (!!data) {
+        for (var i = 0; i < data.length; i++) {
+            new google.maps.Marker({
+                map: map,
+                position: { lat: parseFloat(data[i].location.latitude), lng: parseFloat(data[i].location.longitude) },
+                //title: 'Hello World!'
+            });
+            //google.maps.event.addListener(marker, 'click', function () {
+            //    infowindow.setContent('<div><strong>' + i + '</strong><br>' +
+            //      'Place ID: ' + i + '<br>' +
+            //      i + '</div>');
+            //    infowindow.open(map, this);
+            //});
+        }
     }
-
 
 }
 
@@ -483,38 +484,46 @@ myApp.onPageInit('neighbourhood', function (page) {
 
         var item = JSON.parse(this.dataset.context);
 
+        var getCrimeData = returnData('https://data.police.uk/api/crimes-at-location?date=2015-12&lat=' + item.lat + '&lng=' + item.long);
+
         mainView.router.load({
             template: myApp.templates.crimesatlocation,
             context: {
-                crimesAtLocation: returnData('https://data.police.uk/api/crimes-at-location?date=2015-12&lat=' + item.lat + '&lng=' + item.long),
+                crimesAtLocation: getCrimeData,
             }
         });
 
+        initMap(item.lat, item.long, getCrimeData);
+
     });
 
-    // fetch the favorites
-    var favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    var favoriteIds = JSON.parse(localStorage.getItem('favoriteIds')) || [];
-    var isFavorite = false;
-    //if (favoriteIds.indexOf(page.context.neighbourhoods.id) !== -1) {
-    //    $$('.link.star').html('<i class="fa fa-star"></i>');
-    //    isFavorite = true;
-    //}
+});
 
-    // set up a context object to pass to the handler
-    var pageContext = {
-        track: page.context,
-        id: page.context.neighbourhoods.id,
-        isFavorite: isFavorite,
-        favorites: favorites,
-        favoriteIds: favoriteIds,
-        fromPage: page.fromPage.name,
-    };
 
-    // bind the favorite controls
-    $$('.link.star').on('click', addOrRemoveFavorite.bind(pageContext));
+
+myApp.onPageInit('crimesatlocation', function (page) {
+
+    $$(page.container).find('.crime-at-location-item').on('click', function (e) {
+
+        myApp.showPreloader('Searching');
+
+        var item = JSON.parse(this.dataset.context);
+
+        var getCrimeData = returnData('https://data.police.uk/api/outcomes-for-crime/' + this.dataset.item); 
+
+        mainView.router.load({
+            template: myApp.templates.caldetails,
+            context: {
+                crimesAtLocation: getCrimeData,
+            }
+        });
+
+        initMap(getCrimeData.crime.location.latitude, getCrimeData.crime.location.longitude);
+
+    });
 
 });
+
 
 
 myApp.onPageInit('details', function(page) {
