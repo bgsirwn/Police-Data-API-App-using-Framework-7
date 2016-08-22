@@ -405,21 +405,20 @@ myApp.onPageInit('results', function (page) {
 
 function initMap(lat, lng, data) {
 
-    console.log(lat + " " + lng);
-
     // Specify features and elements to define styles.
     var styleArray = [
       {
           featureType: "all",
           stylers: [
-           { saturation: -80 }
+            { hue: "#000026" },
+           { saturation: 0 }
           ]
       }, {
           featureType: "road.arterial",
           elementType: "geometry",
           stylers: [
-            { hue: "#00ffee" },
-            { saturation: 50 }
+            { hue: "#F3F315" },
+            { saturation: 5 }
           ]
       }, {
           featureType: "poi.business",
@@ -432,12 +431,22 @@ function initMap(lat, lng, data) {
 
     // Create a map object and specify the DOM element for display.
     var map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: parseInt(lat), lng: parseInt(lng) },
+        center: { lat: parseFloat(lat), lng: parseFloat(lng) },
         scrollwheel: false,
         // Apply the map style array to the map.
         styles: styleArray,
-        zoom: 14
+        zoom: 13
     });
+
+    for (var i = 0; i < data.length; i++) {
+        new google.maps.Marker({
+            map: map,
+            position: { lat: parseFloat(data[i].location.latitude), lng: parseFloat(data[i].location.longitude) },
+            //title: 'Hello World!'
+        });
+    }
+
+
 }
 
 
@@ -449,15 +458,16 @@ myApp.onPageInit('neighbourhood', function (page) {
         myApp.showPreloader('Searching');
 
         var item = JSON.parse(this.dataset.context);
+        var getCrimeData = returnData('https://data.police.uk/api/stops-street?lat=' + item.lat + '&lng=' + item.long + '&date=2015-12');
 
         mainView.router.load({
             template: myApp.templates.stopandsearch,
             context: {
-                stopAndSearch: returnData('https://data.police.uk/api/stops-street?lat=' + item.lat + '&lng=' + item.long + '&date=2015-12')
+                stopAndSearch: getCrimeData
             }
         });
 
-        initMap(item.lat, item.long);
+        initMap(item.lat, item.long, getCrimeData);
 
     });
 
@@ -480,10 +490,10 @@ myApp.onPageInit('neighbourhood', function (page) {
     var favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     var favoriteIds = JSON.parse(localStorage.getItem('favoriteIds')) || [];
     var isFavorite = false;
-    if (favoriteIds.indexOf(page.context.neighbourhoods.id) !== -1) {
-        $$('.link.star').html('<i class="fa fa-star"></i>');
-        isFavorite = true;
-    }
+    //if (favoriteIds.indexOf(page.context.neighbourhoods.id) !== -1) {
+    //    $$('.link.star').html('<i class="fa fa-star"></i>');
+    //    isFavorite = true;
+    //}
 
     // set up a context object to pass to the handler
     var pageContext = {
