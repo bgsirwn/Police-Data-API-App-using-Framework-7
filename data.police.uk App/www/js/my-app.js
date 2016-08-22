@@ -402,6 +402,46 @@ myApp.onPageInit('results', function (page) {
 })
 
 
+
+function initMap(lat, lng, data) {
+
+    console.log(lat + " " + lng);
+
+    // Specify features and elements to define styles.
+    var styleArray = [
+      {
+          featureType: "all",
+          stylers: [
+           { saturation: -80 }
+          ]
+      }, {
+          featureType: "road.arterial",
+          elementType: "geometry",
+          stylers: [
+            { hue: "#00ffee" },
+            { saturation: 50 }
+          ]
+      }, {
+          featureType: "poi.business",
+          elementType: "labels",
+          stylers: [
+            { visibility: "off" }
+          ]
+      }
+    ];
+
+    // Create a map object and specify the DOM element for display.
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: parseInt(lat), lng: parseInt(lng) },
+        scrollwheel: false,
+        // Apply the map style array to the map.
+        styles: styleArray,
+        zoom: 14
+    });
+}
+
+
+
 myApp.onPageInit('neighbourhood', function (page) {
 
     $$(page.container).find('.stop-and-search').on('click', function (e) {
@@ -413,9 +453,11 @@ myApp.onPageInit('neighbourhood', function (page) {
         mainView.router.load({
             template: myApp.templates.stopandsearch,
             context: {
-                stopAndSearch: returnData('https://data.police.uk/api/stops-street?lat=' + item.lat + '&lng=' + item.long + '&date=2015-12'),
+                stopAndSearch: returnData('https://data.police.uk/api/stops-street?lat=' + item.lat + '&lng=' + item.long + '&date=2015-12')
             }
         });
+
+        initMap(item.lat, item.long);
 
     });
 

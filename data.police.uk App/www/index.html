@@ -11,7 +11,7 @@
           * Enable inline JS: add 'unsafe-inline' to default-src
       -->
     <!-- Removing 'unsafe-eval'. If needed, I will figure out a way around it -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://maps.googleapis.com https://data.police.uk 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://maps.googleapis.com https://data.police.uk 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">-->
 
     <!-- Required meta tags-->
     <meta charset="utf-8">
@@ -21,6 +21,8 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <link rel="stylesheet" href="lib/font-awesome-4.5.0/css/font-awesome.min.css" />
+
+
 
     <title>
         data.police.uk App
@@ -337,7 +339,11 @@
 
             <div class="page-content">
                 <div class="content-block-title">Stop &amp; Searches returned</div>
-                <!-- Workshop - add searchbar-found class to media list -->
+                
+                <div class="clearfix"></div>
+                <div id="map" style="height:400px;width:100%;margin:0 auto;"></div>
+                <div class="clearfix"></div>
+
                 <div class="list-block media-list list-block-search searchbar-found">
                     <ul>
                         {{#each stopAndSearch}}
@@ -567,8 +573,14 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="lib/MSOpenTech/winstore-jscompat.js"></script>
     <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
+    <script type="text/javascript" src="js/react.min.js"></script>
+    <script type="text/javascript" src="js/react-dom.min.js"></script>
     <script type="text/javascript" src="js/init-styles.js"></script>
     <script type="text/javascript" src="js/my-app.js"></script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDN-qf9EoORm7k6gOIHQVKBdmABcwFYZ30"
+            async defer></script>
+
 </body>
 
 </html>
