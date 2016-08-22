@@ -439,10 +439,16 @@ function initMap(lat, lng, data) {
     });
 
     for (var i = 0; i < data.length; i++) {
-        new google.maps.Marker({
+        var marker = new google.maps.Marker({
             map: map,
             position: { lat: parseFloat(data[i].location.latitude), lng: parseFloat(data[i].location.longitude) },
             //title: 'Hello World!'
+        });
+        google.maps.event.addListener(marker, 'click', function () {
+            infowindow.setContent('<div><strong>' + i + '</strong><br>' +
+              'Place ID: ' + i + '<br>' +
+              i + '</div>');
+            infowindow.open(map, this);
         });
     }
 
